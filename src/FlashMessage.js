@@ -179,6 +179,7 @@ export const DefaultFlash = ({
   floating = false,
   icon,
   hideStatusBar = false,
+  customContent,
   ...props
 }) => {
   const hasDescription = !!message.description && message.description !== "";
@@ -191,6 +192,8 @@ export const DefaultFlash = ({
       icon.style,
     ]);
   const hasIcon = !!iconView;
+
+  
 
   return (
     <FlashMessageWrapper position={typeof position === "string" ? position : null}>
@@ -216,7 +219,7 @@ export const DefaultFlash = ({
           )}
           {...props}>
           {hasIcon && icon.position === "left" && iconView}
-          <View style={styles.flashLabel}>
+          {message.customContent ? message.customContent : <View style={styles.flashLabel}>
             <Text
               style={[
                 styles.flashText,
@@ -231,7 +234,7 @@ export const DefaultFlash = ({
                 {message.description}
               </Text>
             )}
-          </View>
+          </View>}
           {hasIcon && icon.position === "right" && iconView}
         </View>
       )}
@@ -317,7 +320,7 @@ export default class FlashMessage extends Component {
     /**
      * The `MessageComponent` prop set the default flash message render component used to show all the messages
      */
-    MessageComponent: DefaultFlash,
+    MessageComponent: DefaultFlash
   };
   static propTypes = {
     canRegisterAsDefault: PropTypes.bool,
@@ -492,6 +495,7 @@ export default class FlashMessage extends Component {
    * ```
    */
   showMessage(message, description = null, type = "default") {
+    
     if (!!message) {
       let _message = {};
       if (typeof message === "string") {
