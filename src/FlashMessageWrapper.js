@@ -119,7 +119,7 @@ export function styleWithInset(style, wrapperInset, hideStatusBar = false, prop 
 
   return {
     ...viewStyle,
-    paddingTop: !!wrapperInset.isIPhoneX || !hideStatusBar ? paddingTop + wrapperInset.insetTop : paddingTop,
+    paddingTop: 16,
     paddingBottom: paddingBottom + wrapperInset.insetBottom,
     paddingLeft: paddingLeft + wrapperInset.insetLeft,
     paddingRight: paddingRight + wrapperInset.insetRight,
