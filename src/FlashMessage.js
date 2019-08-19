@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 
 import FlashMessageManager from "./FlashMessageManager";
 import FlashMessageWrapper, { styleWithInset } from "./FlashMessageWrapper";
+import {theme} from '../../../components/GlobalStyles';
 
 /**
  * MessageComponent `minHeight` property used mainly in vertical transitions
@@ -119,7 +120,7 @@ export function FlashMessageTransition(animValue, position = "top") {
   if (position === "top") {
     const translateY = animValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [-OFFSET_HEIGHT, 0],
+      outputRange: [-OFFSET_HEIGHT, 20],
     });
 
     return {
@@ -569,8 +570,17 @@ export default class FlashMessage extends Component {
 const styles = StyleSheet.create({
   root: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: 16,
+    right: 16,
+    borderRadius: 8,
+    backgroundColor: theme.color.white,
+    shadowColor: theme.color.black8,
+    shadowOffset: {
+      width: 0,
+      height: 16
+    },
+    shadowRadius: 24,
+    shadowOpacity: 1
   },
   rootTop: {
     top: 0,
@@ -579,8 +589,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   rootCenter: {
-    justifyContent: "center",
-    alignItems: "center",
+    
   },
   rootCenterEnabled: {
     top: 0,
@@ -589,11 +598,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   defaultFlash: {
-    justifyContent: "flex-start",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    borderRadius:8,
     backgroundColor: "#696969",
-    minHeight: OFFSET_HEIGHT,
   },
   defaultFlashCenter: {
     margin: 44,
