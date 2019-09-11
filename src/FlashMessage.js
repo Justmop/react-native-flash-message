@@ -120,7 +120,7 @@ export function FlashMessageTransition(animValue, position = "top") {
   if (position === "top") {
     const translateY = animValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [-OFFSET_HEIGHT, 20],
+      outputRange: [-OFFSET_HEIGHT, isIphoneX() ? 40 : 20],
     });
 
     return {
