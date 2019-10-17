@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 
 import FlashMessageManager from "./FlashMessageManager";
 import FlashMessageWrapper, { styleWithInset } from "./FlashMessageWrapper";
-import {theme} from '../../../components/GlobalStyles';
 
 /**
  * MessageComponent `minHeight` property used mainly in vertical transitions
@@ -573,8 +572,8 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
     borderRadius: 8,
-    backgroundColor: theme.color.white,
-    shadowColor: theme.color.black8,
+    backgroundColor: "white",
+    shadowColor: "rgba(0, 0, 0, 0.08)",
     shadowOffset: {
       width: 0,
       height: 16
