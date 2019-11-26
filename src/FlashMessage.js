@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View, I18nManager } from "react-native";
 import { isIphoneX, getStatusBarHeight } from "react-native-iphone-x-helper";
 import PropTypes from "prop-types";
 
@@ -360,15 +360,19 @@ export default class FlashMessage extends Component {
     this.pressMessage = this.pressMessage.bind(this);
     this.toggleVisibility = this.toggleVisibility.bind(this);
     if (!this._id) this._id = srid();
+    this.bannerProgressWidth = new Animated.Value(100);
 
     this.state = {
       visibleValue: new Animated.Value(0),
       isHidding: false,
       message: props.message || null,
+      bannerProgressValue: new Animated.Value(100)
     };
   }
   componentDidMount() {
     if (this.props.canRegisterAsDefault) {
+      this.state.bannerProgressValue.setValue(100);
+      this.setState({ bannerProgressValue: new Animated.Value(100)});
       FlashMessageManager.register(this);
     }
   }
@@ -419,18 +423,30 @@ export default class FlashMessage extends Component {
     const autoHide = this.prop(message, "autoHide");
     const hideStatusBar = this.prop(message, "hideStatusBar");
 
+
+
+    
     if (this._hideTimeout) {
       clearTimeout(this._hideTimeout);
+
     }
 
     if (visible) {
+
       const onShow = this.prop(message, "onShow") || noop;
       const finish = () => {
         if (!!autoHide && duration > 0) {
-          this._hideTimeout = setTimeout(() => this.toggleVisibility(false, animated), duration);
+
+          this._hideTimeout = setTimeout(() => {this.toggleVisibility(false, animated);
+            this.setState({ bannerProgressValue: new Animated.Value(100)})
+
+   
+          
+          }, duration);
         }
 
         if (!!done && typeof done === "function") {
+
           done();
         }
       };
@@ -439,6 +455,7 @@ export default class FlashMessage extends Component {
       this.state.visibleValue.setValue(0);
 
       if (!!onShow && typeof onShow === "function") {
+
         onShow(this);
       }
 
@@ -447,22 +464,29 @@ export default class FlashMessage extends Component {
       }
 
       if (animated) {
+
         Animated.timing(this.state.visibleValue, {
           toValue: 1,
           duration: animationDuration,
           useNativeDriver: true,
         }).start(finish);
       } else {
+
         finish();
       }
     } else {
+
       const onHide = this.prop(message, "onHide") || noop;
       const finish = () => {
         this.setState({ message: null, isHidding: false });
 
         if (!!onHide && typeof onHide === "function") {
           onHide(this);
-        }
+
+
+        this.state.bannerProgressValue.setValue(100);
+        this.setState({ bannerProgressValue: new Animated.Value(100)});
+                 }
 
         if (!!done && typeof done === "function") {
           done();
@@ -495,7 +519,8 @@ export default class FlashMessage extends Component {
    * ```
    */
   showMessage(message, description = null, type = "default") {
-    
+    this.state.bannerProgressValue.setValue(100);
+    this.bannerProgressStart(message)
     if (!!message) {
       let _message = {};
       if (typeof message === "string") {
@@ -509,6 +534,7 @@ export default class FlashMessage extends Component {
       return;
     }
 
+
     this.setState({ message: null, isHidding: false });
   }
   /**
@@ -520,11 +546,23 @@ export default class FlashMessage extends Component {
    */
   hideMessage() {
     const animated = this.isAnimated(this.state.message);
+
+    this.setState({ bannerProgressValue: new Animated.Value(100)});
     this.toggleVisibility(false, animated);
+  }
+
+  bannerProgressStart(message) {
+    if(!message) return;
+    Animated.timing(this.state.bannerProgressValue, {
+      toValue: 0,
+      duration: message.duration,
+
+    }).start(() => {
+    });
   }
   render() {
     const { renderFlashMessageIcon, MessageComponent } = this.props;
-    const { message, visibleValue } = this.state;
+    const { message, visibleValue, bannerProgressValue } = this.state;
 
     const style = this.prop(message, "style");
     const textStyle = this.prop(message, "textStyle");
@@ -536,7 +574,11 @@ export default class FlashMessage extends Component {
     const transitionConfig = this.prop(message, "transitionConfig");
     const animated = this.isAnimated(message);
     const animStyle = animated ? transitionConfig(visibleValue, position) : {};
-
+    const width =  bannerProgressValue.interpolate({
+      inputRange: [0, 100],
+      outputRange: ['0%', '100%'],
+      extrapolate: 'clamp'
+    });
     return (
       <Animated.View
         style={[
@@ -559,6 +601,14 @@ export default class FlashMessage extends Component {
             />
           </TouchableWithoutFeedback>
         )}
+        <Animated.View
+                style={{
+                  borderBottomColor: message ? message.color : 'white',
+                  borderBottomWidth: 2,
+                  borderRadius: 10,
+                  width,
+                }}
+              />
       </Animated.View>
     );
   }
