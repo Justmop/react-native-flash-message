@@ -547,7 +547,7 @@ export default class FlashMessage extends Component {
   hideMessage() {
     const animated = this.isAnimated(this.state.message);
 
-    this.setState({ bannerProgressValue: new Animated.Value(100)});
+    this.setState({ bannerProgressValue: new Animated.Value(0)});
     this.toggleVisibility(false, animated);
   }
 
