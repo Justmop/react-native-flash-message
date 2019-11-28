@@ -1,8 +1,8 @@
 "use strict";
 
 import React, { Component } from "react";
-import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View, I18nManager } from "react-native";
-import { isIphoneX, getStatusBarHeight } from "react-native-iphone-x-helper";
+import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View } from "react-native";
+import { isIphoneX } from "react-native-iphone-x-helper";
 import PropTypes from "prop-types";
 
 import FlashMessageManager from "./FlashMessageManager";
@@ -438,15 +438,11 @@ export default class FlashMessage extends Component {
         if (!!autoHide && duration > 0) {
 
           this._hideTimeout = setTimeout(() => {this.toggleVisibility(false, animated);
-            this.setState({ bannerProgressValue: new Animated.Value(100)})
-
-   
-          
+            this.setState({ bannerProgressValue: new Animated.Value(0)})
           }, duration);
         }
 
         if (!!done && typeof done === "function") {
-
           done();
         }
       };
@@ -455,7 +451,6 @@ export default class FlashMessage extends Component {
       this.state.visibleValue.setValue(0);
 
       if (!!onShow && typeof onShow === "function") {
-
         onShow(this);
       }
 
@@ -464,18 +459,15 @@ export default class FlashMessage extends Component {
       }
 
       if (animated) {
-
         Animated.timing(this.state.visibleValue, {
           toValue: 1,
           duration: animationDuration,
           useNativeDriver: true,
         }).start(finish);
       } else {
-
         finish();
       }
     } else {
-
       const onHide = this.prop(message, "onHide") || noop;
       const finish = () => {
         this.setState({ message: null, isHidding: false });
@@ -575,10 +567,10 @@ export default class FlashMessage extends Component {
     const animated = this.isAnimated(message);
     const animStyle = animated ? transitionConfig(visibleValue, position) : {};
     const width =  bannerProgressValue.interpolate({
-      inputRange: [0, 100],
-      outputRange: ['0%', '100%'],
-      extrapolate: 'clamp'
+      inputRange: [0, 10],
+      outputRange: ['0%', '10%'],
     });
+
     return (
       <Animated.View
         style={[
