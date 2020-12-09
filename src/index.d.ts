@@ -51,6 +51,7 @@ interface MessageOptions {
   position?: Position;
   type?: MessageType;
   onPress?(): void;
+  customContent?: JSX.Element;
 }
 
 interface FlashMessageProps extends Partial<MessageOptions> {
